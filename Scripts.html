@@ -1,0 +1,270 @@
+<script>
+  (() => {
+    'use strict';
+
+    const config = window.APP_CONFIG || {};
+    const trackingKeys = [
+      'utm_source',
+      'utm_medium',
+      'utm_campaign',
+      'utm_content',
+      'utm_term',
+      'fbclid',
+      'gclid',
+      'ttclid'
+    ];
+
+    const pageParams = new URLSearchParams(window.location.search);
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function byId(id) {
+      return document.getElementById(id);
+    }
+
+    function setText(id, value) {
+      const node = byId(id);
+      if (node) node.textContent = value || '';
+    }
+
+    function isConfiguredUrl(value) {
+      if (typeof value !== 'string' || !value.trim() || value.includes('PASTE_PUBLIC_')) {
+        return false;
+      }
+
+      return /^https:\/\//i.test(value) || /^(?:\.\/|\/|assets\/)/i.test(value);
+    }
+
+    function appendTracking(baseUrl) {
+      try {
+        const url = new URL(baseUrl);
+
+        trackingKeys.forEach((key) => {
+          const value = pageParams.get(key);
+          if (value && !url.searchParams.has(key)) {
+            url.searchParams.set(key, value);
+          }
+        });
+
+        url.searchParams.set('lp', 'venicevip_appscript');
+        return url.toString();
+      } catch (error) {
+        console.error('Invalid destination URL:', baseUrl, error);
+        return baseUrl || '#';
+      }
+    }
+
+    function setDestinationLinks() {
+      const registerUrl = appendTracking(config.registerUrl);
+      const lineUrl = appendTracking(config.lineUrl);
+
+      document.querySelectorAll('.js-register-link').forEach((link) => {
+        link.href = registerUrl;
+        link.rel = 'noopener noreferrer';
+      });
+
+      document.querySelectorAll('.js-line-link').forEach((link) => {
+        link.href = lineUrl;
+        link.rel = 'noopener noreferrer';
+      });
+    }
+
+    function loadGa4(id) {
+      if (!id || !/^G-[A-Z0-9]+$/i.test(id)) return;
+
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = function () {
+        window.dataLayer.push(arguments);
+      };
+
+      window.gtag('js', new Date());
+      window.gtag('config', id, {
+        send_page_view: true,
+        page_title: document.title,
+        page_location: window.location.href
+      });
+
+      const script = document.createElement('script');
+      script.async = true;
+      script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(id)}`;
+      document.head.appendChild(script);
+    }
+
+    function loadMetaPixel(id) {
+      if (!id || !/^\d{5,20}$/.test(id)) return;
+
+      /* Meta Pixel base loader */
+      !(function (f, b, e, v, n, t, s) {
+        if (f.fbq) return;
+        n = f.fbq = function () {
+          n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+        };
+        if (!f._fbq) f._fbq = n;
+        n.push = n;
+        n.loaded = true;
+        n.version = '2.0';
+        n.queue = [];
+        t = b.createElement(e);
+        t.async = true;
+        t.src = v;
+        s = b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t, s);
+      })(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
+
+      window.fbq('init', id);
+      window.fbq('track', 'PageView');
+    }
+
+    function trackEvent(eventName, properties = {}) {
+      const payload = {
+        ...properties,
+        page_path: window.location.pathname,
+        utm_source: pageParams.get('utm_source') || undefined,
+        utm_campaign: pageParams.get('utm_campaign') || undefined,
+        utm_content: pageParams.get('utm_content') || undefined
+      };
+
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', eventName, {
+          ...payload,
+          transport_type: 'beacon'
+        });
+      }
+
+      if (typeof window.fbq === 'function') {
+        const metaName = eventName.startsWith('register') ? 'Lead' : 'Contact';
+        window.fbq('track', metaName, {
+          content_name: eventName,
+          ...payload
+        });
+      }
+    }
+
+    function attachClickTracking() {
+      document.querySelectorAll('[data-track]').forEach((element) => {
+        element.addEventListener('click', () => {
+          trackEvent(element.dataset.track || 'cta_click', {
+            destination: element.href || ''
+          });
+        });
+      });
+    }
+
+    function setupContent() {
+      setText('eyebrowText', config.eyebrow);
+      setText('headingLine1', config.headingLine1);
+      setText('headingLine2', config.headingLine2);
+      setText('headingLine3', config.headingLine3);
+      setText('descriptionLine1', config.descriptionLine1);
+      setText('descriptionLine2', config.descriptionLine2);
+      setText('minimumAgeText', config.minimumAgeText);
+
+      const brandImage = byId('brandImage');
+      const brandFallback = byId('brandFallback');
+
+      if (isConfiguredUrl(config.logoUrl) && brandImage) {
+        brandImage.src = config.logoUrl;
+        brandImage.hidden = false;
+        if (brandFallback) brandFallback.hidden = true;
+      }
+    }
+
+    function setupMedia() {
+      const video = byId('heroVideo');
+      const poster = byId('posterFallback');
+      const toggle = byId('motionToggle');
+
+      if (poster && isConfiguredUrl(config.posterUrl)) {
+        poster.style.backgroundImage = `url("${config.posterUrl.replace(/"/g, '%22')}")`;
+      }
+
+      if (!video || !isConfiguredUrl(config.videoUrl) || reducedMotion) {
+        if (video) video.remove();
+        if (toggle) toggle.hidden = true;
+        return;
+      }
+
+      if (isConfiguredUrl(config.posterUrl)) {
+        video.poster = config.posterUrl;
+      }
+
+      video.src = config.videoUrl;
+
+      const markReady = () => {
+        video.classList.add('is-ready');
+      };
+
+      video.addEventListener('loadeddata', markReady, { once: true });
+      video.addEventListener('canplay', markReady, { once: true });
+      video.addEventListener('error', () => {
+        video.classList.remove('is-ready');
+        if (toggle) toggle.hidden = true;
+      });
+
+      const attemptPlay = () => {
+        const promise = video.play();
+        if (promise && typeof promise.catch === 'function') {
+          promise.catch(() => {
+            if (toggle) {
+              toggle.classList.add('is-paused');
+              toggle.setAttribute('aria-pressed', 'true');
+            }
+          });
+        }
+      };
+
+      attemptPlay();
+
+      if (toggle) {
+        toggle.addEventListener('click', () => {
+          if (video.paused) {
+            video.play().catch(() => {});
+            toggle.classList.remove('is-paused');
+            toggle.setAttribute('aria-pressed', 'false');
+            toggle.setAttribute('aria-label', 'หยุดภาพเคลื่อนไหว');
+            trackEvent('motion_play');
+          } else {
+            video.pause();
+            toggle.classList.add('is-paused');
+            toggle.setAttribute('aria-pressed', 'true');
+            toggle.setAttribute('aria-label', 'เล่นภาพเคลื่อนไหว');
+            trackEvent('motion_pause');
+          }
+        });
+      }
+
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          video.pause();
+        } else if (!toggle || !toggle.classList.contains('is-paused')) {
+          attemptPlay();
+        }
+      });
+    }
+
+    function hideLoader() {
+      const loader = byId('pageLoader');
+      if (!loader) return;
+
+      window.setTimeout(() => {
+        loader.classList.add('is-hidden');
+        window.setTimeout(() => loader.remove(), 500);
+      }, 240);
+    }
+
+    function init() {
+      setupContent();
+      setDestinationLinks();
+      loadGa4(config.ga4MeasurementId);
+      loadMetaPixel(config.metaPixelId);
+      attachClickTracking();
+      setupMedia();
+      hideLoader();
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init, { once: true });
+    } else {
+      init();
+    }
+  })();
+</script>

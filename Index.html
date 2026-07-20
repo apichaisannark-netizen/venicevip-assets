@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <base target="_top">
+    <meta charset="utf-8">
+    <meta name="color-scheme" content="dark">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="description" content="สมัครสมาชิก VENICEVIP และติดต่อทีมงานผ่าน LINE">
+    <meta name="theme-color" content="#031b12">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Kanit:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    >
+
+    <?!= include('Styles'); ?>
+
+    <script>
+      window.APP_CONFIG = <?!= appConfigJson ?>;
+    </script>
+  </head>
+
+  <body>
+    <noscript>
+      <div class="noscript-message">
+        กรุณาเปิดใช้งาน JavaScript เพื่อเข้าสู่หน้า VENICEVIP
+      </div>
+    </noscript>
+
+    <div id="pageLoader" class="page-loader" aria-hidden="true">
+      <div class="loader-mark">V</div>
+      <div class="loader-bar"><span></span></div>
+    </div>
+
+    <main class="landing" id="landing">
+      <div class="ambient ambient-one" aria-hidden="true"></div>
+      <div class="ambient ambient-two" aria-hidden="true"></div>
+      <div class="grid-texture" aria-hidden="true"></div>
+
+      <section id="hero" class="hero" aria-labelledby="heroTitle">
+        <div class="hero-media" aria-hidden="true">
+          <div id="posterFallback" class="poster-fallback"></div>
+          <video
+            id="heroVideo"
+            class="hero-video"
+            autoplay
+            muted
+            loop
+            playsinline
+            preload="metadata"
+            disablepictureinpicture
+          ></video>
+          <div class="media-shadow"></div>
+          <div class="media-vignette"></div>
+          <div class="media-scan"></div>
+        </div>
+
+        <header class="topbar">
+          <a class="brand" href="#hero" aria-label="VENICEVIP หน้าแรก">
+            <img id="brandImage" class="brand-image" alt="VENICEVIP" hidden>
+            <span id="brandFallback" class="brand-fallback">
+              VENICE<span>VIP</span>
+            </span>
+          </a>
+
+          <div class="top-actions">
+            <a class="top-line js-line-link" href="#" data-track="line_top">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M20.4 11.3c0-4.1-4.1-7.4-9.2-7.4S2 7.2 2 11.3c0 3.7 3.3 6.8 7.8 7.3.3.1.7.2.8.5.1.3.1.8 0 1.1l-.2 1c-.1.3-.2 1.2 1 .7 1.2-.5 6.4-3.8 8.7-6.5 1.6-1.7 2.3-3.5 2.3-5z"/>
+              </svg>
+              <span>LINE</span>
+            </a>
+
+            <a class="top-register js-register-link" href="#" data-track="register_top">
+              สมัครเลย
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M7 17 17 7M8 7h9v9"/>
+              </svg>
+            </a>
+          </div>
+        </header>
+
+        <div class="hero-layout">
+          <div class="hero-copy">
+            <div class="eyebrow animate-up delay-0">
+              <span class="crown" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path d="m3 7 4 4 5-7 5 7 4-4-2 11H5L3 7Z"/>
+                  <path d="M5 21h14"/>
+                </svg>
+              </span>
+              <span id="eyebrowText"></span>
+            </div>
+
+            <h1 id="heroTitle" class="hero-title animate-up delay-1">
+              <span id="headingLine1"></span>
+              <span id="headingLine2" class="accent-line"></span>
+              <span id="headingLine3"></span>
+            </h1>
+
+            <p class="hero-description animate-up delay-2">
+              <span id="descriptionLine1"></span><br>
+              <strong id="descriptionLine2"></strong>
+            </p>
+
+            <div class="cta-stack animate-up delay-3">
+              <a
+                class="cta cta-primary js-register-link"
+                href="#"
+                data-track="register_hero"
+                aria-label="สมัครสมาชิกทันที"
+              >
+                <span class="cta-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M15 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                    <circle cx="8.5" cy="7" r="4"/>
+                    <path d="M19 8v6M22 11h-6"/>
+                  </svg>
+                </span>
+                <span>
+                  <small>เริ่มต้นกับ VENICEVIP</small>
+                  สมัครสมาชิกทันที
+                </span>
+                <svg class="cta-arrow" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M7 17 17 7M8 7h9v9"/>
+                </svg>
+              </a>
+
+              <a
+                class="cta cta-secondary js-line-link"
+                href="#"
+                data-track="line_hero"
+                aria-label="ติดต่อแอดมินทาง LINE"
+              >
+                <span class="cta-icon line-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M20.4 11.3c0-4.1-4.1-7.4-9.2-7.4S2 7.2 2 11.3c0 3.7 3.3 6.8 7.8 7.3.3.1.7.2.8.5.1.3.1.8 0 1.1l-.2 1c-.1.3-.2 1.2 1 .7 1.2-.5 6.4-3.8 8.7-6.5 1.6-1.7 2.3-3.5 2.3-5z"/>
+                  </svg>
+                </span>
+                <span>
+                  <small>สอบถามข้อมูลเพิ่มเติม</small>
+                  ติดต่อแอดมิน LINE
+                </span>
+                <svg class="cta-arrow" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M7 17 17 7M8 7h9v9"/>
+                </svg>
+              </a>
+            </div>
+
+            <div class="features animate-up delay-4" aria-label="จุดเด่น">
+              <div class="feature">
+                <span class="feature-icon">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/>
+                    <path d="m9 12 2 2 4-4"/>
+                  </svg>
+                </span>
+                <span><strong>สมัครสะดวก</strong><small>ขั้นตอนไม่ซับซ้อน</small></span>
+              </div>
+
+              <div class="feature">
+                <span class="feature-icon">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M4 13a8 8 0 0 1 16 0"/>
+                    <path d="M18 19c0 1.1-.9 2-2 2h-3"/>
+                    <path d="M4 13v4a2 2 0 0 0 2 2h1v-8H6a2 2 0 0 0-2 2ZM20 13v4a2 2 0 0 1-2 2h-1v-8h1a2 2 0 0 1 2 2Z"/>
+                  </svg>
+                </span>
+                <span><strong>ทีมงานพร้อมดูแล</strong><small>ติดต่อได้โดยตรง</small></span>
+              </div>
+
+              <div class="feature">
+                <span class="feature-icon">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <rect width="14" height="20" x="5" y="2" rx="2"/>
+                    <path d="M12 18h.01"/>
+                  </svg>
+                </span>
+                <span><strong>รองรับมือถือ</strong><small>ใช้งานได้ทุกที่</small></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="responsible-note animate-in delay-5">
+          <span class="age-badge">20+</span>
+          <span id="minimumAgeText"></span>
+        </div>
+
+        <button
+          id="motionToggle"
+          class="motion-toggle"
+          type="button"
+          aria-label="หยุดภาพเคลื่อนไหว"
+          aria-pressed="false"
+        >
+          <svg class="pause-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M9 5v14M15 5v14"/>
+          </svg>
+          <svg class="play-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m8 5 11 7-11 7V5Z"/>
+          </svg>
+        </button>
+      </section>
+
+      <nav class="sticky-actions" aria-label="ทางลัดสมัครสมาชิก">
+        <a class="sticky-line js-line-link" href="#" data-track="line_sticky">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20.4 11.3c0-4.1-4.1-7.4-9.2-7.4S2 7.2 2 11.3c0 3.7 3.3 6.8 7.8 7.3.3.1.7.2.8.5.1.3.1.8 0 1.1l-.2 1c-.1.3-.2 1.2 1 .7 1.2-.5 6.4-3.8 8.7-6.5 1.6-1.7 2.3-3.5 2.3-5z"/>
+          </svg>
+          <span>LINE</span>
+        </a>
+
+        <a class="sticky-register js-register-link" href="#" data-track="register_sticky">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M15 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+            <circle cx="8.5" cy="7" r="4"/>
+            <path d="M19 8v6M22 11h-6"/>
+          </svg>
+          <span>สมัครเลย</span>
+        </a>
+      </nav>
+    </main>
+
+    <?!= include('Scripts'); ?>
+  </body>
+</html>
